@@ -215,36 +215,7 @@ async function computeVersion(
   includePreReleases: boolean,
   repoToken: string
 ): Promise<string> {
-  // strip leading `v` char (will be re-added later)
-  if (version.startsWith("v")) {
-    version = version.slice(1, version.length);
-  }
-
-  // strip trailing .x chars
-  if (version.endsWith(".x")) {
-    version = version.slice(0, version.length - 2);
-  }
-
-  const allVersions = await fetchVersions(includePreReleases, repoToken);
-  const validVersions = allVersions //.filter(v => semver.valid(v));
-  const possibleVersions = validVersions.filter(v => v.startsWith(version));
-
-  const versionMap = new Map();
-  possibleVersions.forEach(v => versionMap.set(normalizeVersion(v), v));
-
-  const versions = Array.from(versionMap.keys())
-    .sort(semver.rcompare)
-    .map(v => versionMap.get(v));
-
-  core.debug(`evaluating ${versions.length} versions`);
-
-  if (versions.length === 0) {
-    throw new Error("unable to get latest version");
-  }
-
-  core.debug(`matched: ${versions[0]}`);
-
-  return "v" + versions[0];
+  return version;
 }
 
 // Make partial versions semver compliant.
